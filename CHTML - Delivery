@@ -1,0 +1,47 @@
+<script>
+  (function() {
+    // Отримання елемента з класом 'clearfix sc_carrier_row sc_carrier_row_checked'
+    var element = document.querySelector('.clearfix.sc_carrier_row.sc_carrier_row_checked');
+
+    // Отримання значення з атрибуту 'value' з використанням регулярного виразу
+    var value = element.getAttribute('value').match(/\d+/)[0];
+
+    // Визначення типу доставки залежно від значення
+    var deliveryType = '';
+    var deliverySubType = '';
+
+    if (value === '27' || value === '30' || value === '33' || value === '57' || value === '55' || value === '42') {
+      deliveryType = 'courier';
+    } else if (value === '71') {
+      deliveryType = 'nova_poshta';
+
+      var deliveryTypeElement = document.querySelector('.select2-selection__rendered#select2-id_warehouse_delivery-container');
+
+      if (deliveryTypeElement) {
+        var title = deliveryTypeElement.getAttribute('title');
+        var extractedText = deliveryTypeElement.textContent.trim();
+
+        if (extractedText.includes('Поштомат')) {
+          deliverySubType = 'поштомат';
+        } else {
+          deliverySubType = 'відділення';
+        }
+
+        console.log('Extracted text:', extractedText);
+      }
+
+      console.log('Delivery subtype:', deliverySubType);
+    } else {
+      deliveryType = 'unknown';
+    }
+
+    console.log('Delivery type:', deliveryType);
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'delivery',
+      type: deliveryType,
+      subtype: deliverySubType
+    });
+  })();
+</script>
