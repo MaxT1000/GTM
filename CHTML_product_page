@@ -1,0 +1,46 @@
+script>
+(function() {
+  // Отримання значень з елементів сторінки
+  var productNameElement = document.querySelector('#product h1');
+  var itemName = productNameElement ? productNameElement.textContent.trim() : '';
+
+  var itemIdElement = document.querySelector('#option_model');
+  var itemId = itemIdElement ? itemIdElement.textContent.trim() : '';
+
+  var priceElement = document.querySelector('.euro-price');
+  var price = '';
+
+  var discountPriceElement = document.querySelector('.euro-price span[style="color: red;"]');
+  if (discountPriceElement) {
+    // Якщо є знижка, використовуємо знижену ціну
+    price = discountPriceElement.textContent.trim().replace(',', '.').replace('грн.', '');
+  } else {
+    // Якщо немає знижки, використовуємо основну ціну
+    price = priceElement ? priceElement.textContent.trim().replace(',', '.').replace('грн.', '') : '';
+  }
+
+  var quantityElement = document.querySelector('input[name="quantity"]');
+  var quantity = quantityElement ? quantityElement.value : '';
+
+  // Обчислення загальної вартості товарів
+  var value = parseFloat(price) * parseInt(quantity, 10);
+
+  // Створення об'єкту з параметрами продукту
+  var itemData = {
+    item_name: itemName,
+    item_id: itemId,
+    price: price,
+    quantity: quantity
+  };
+
+  // Передача інформації у DataLayer
+  dataLayer.push({
+    event: 'product_page',
+    ecommerce: {
+      currency: 'UAH',
+      value: value.toFixed(2), // Заокруглюємо значення до двох знаків після коми
+      items: [itemData]
+    }
+  });
+})();
+</script>
